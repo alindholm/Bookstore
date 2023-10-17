@@ -39,5 +39,23 @@ public class BookController {
 	    repository.deleteById(id);
 	    return "redirect:/booklist";
 	}
+	@GetMapping("/edit/{id}")
+	public String editBook(@PathVariable("id") Long id, Model model) {
+	    // Retrieve the book by ID from the repository
+		Book book = repository.findById(id).orElse(null);	    
+		model.addAttribute("book", book);
+	    return "editbook";
+	}
+	@PostMapping("/edit/{id}")
+	public String updateBook(@PathVariable("id") Long id, @ModelAttribute Book editedBook) {
+	    Book existingBook = repository.findById(id).orElse(null);
+	        existingBook.setTitle(editedBook.getTitle());
+	        existingBook.setAuthor(editedBook.getAuthor());
+	        existingBook.setYear(editedBook.getYear());
+	        existingBook.setIsbn(editedBook.getIsbn());
+	        existingBook.setPrice(editedBook.getPrice());
+	        repository.save(existingBook);
+	    return "redirect:/booklist";
+	}
 
 }
