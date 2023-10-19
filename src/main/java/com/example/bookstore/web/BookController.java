@@ -12,38 +12,46 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.example.bookstore.domain.Book;
 import com.example.bookstore.domain.BookRepository;
+import com.example.bookstore.domain.GategoryRepository;
 
 @Controller
 public class BookController {
 	@Autowired
 	private BookRepository repository;
-	@GetMapping(value= {"/booklist"})
+	@Autowired
+	private GategoryRepository grepository;
+
+	@GetMapping(value = { "/booklist" })
 	public String bookList(Model model) {
-	model.addAttribute("books", repository.findAll());return "booklist";
+		model.addAttribute("books", repository.findAll());
+		return "booklist";
 	}
-	@GetMapping("/addbook")
-    public String showAddBookForm() {
-        return "addbook";}
-	@RequestMapping(value = "/add")
-	public String addStudent(Model model){
-	 model.addAttribute("student", new Book());
-	 return "addstudent";
+
+	@RequestMapping(value = "/addbook")
+	public String addStudent(Model model) {
+	    model.addAttribute("book", new Book());
+	    model.addAttribute("gategory", grepository.findAll());
+	    return "addbook";
 	}
+
+
 	@PostMapping("/save")
 	public String saveBook(@ModelAttribute Book book) {
-	    repository.save(book);
-	    return "redirect:/booklist";
+		repository.save(book);
+		return "redirect:/booklist";
 	}
-	@RequestMapping(value="/delete/{id}", method=RequestMethod.GET)
+
+	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
 	public String deleteBook(@PathVariable Long id) {
-	    repository.deleteById(id);
-	    return "redirect:/booklist";
+		repository.deleteById(id);
+		return "redirect:/booklist";
 	}
+	
 	@GetMapping("/edit/{id}")
 	public String editBook(@PathVariable("id") Long id, Model model) {
-	    // Retrieve the book by ID from the repository
 		Book book = repository.findById(id).orElse(null);	    
 		model.addAttribute("book", book);
+        model.addAttribute("gategory", grepository.findAll());
 	    return "editbook";
 	}
 	@PostMapping("/edit/{id}")
@@ -54,8 +62,10 @@ public class BookController {
 	        existingBook.setYear(editedBook.getYear());
 	        existingBook.setIsbn(editedBook.getIsbn());
 	        existingBook.setPrice(editedBook.getPrice());
+	        existingBook.setGategory(editedBook.getGategory());
 	        repository.save(existingBook);
-	    return "redirect:/booklist";
+	        return "redirect:/booklist";
+	    }
 	}
 
-}
+

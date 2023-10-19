@@ -6,7 +6,7 @@
 <body>
     <h2>Add a New Book</h2>
     <div>
-    <form th:oject="${book}"th:action="@{save}" action="#"method="post">
+    <form th:object="${book}" th:action="@{/save}" method="post">
         <label for="title">Title:</label>
         <input type="text" id="title" name="title" required><br>
 
@@ -21,6 +21,11 @@
 
         <label for="price">Price:</label>
         <input type="text" id="price" name="price" required><br>
+        <div style="clear: both; display: block; height: 10px;"></div>						
+		  	<label for="deplist">Gategory</label>
+			 <select id="deplist" th:field="*{gategory}" class="form-control">
+       			<option th:each="gategory: ${gategory}" th:value="${gategory.gategoryid}" th:text="${gategory.name}"></option>
+    		</select>
 
         <input type="submit" value="Add Book">
     </form>
